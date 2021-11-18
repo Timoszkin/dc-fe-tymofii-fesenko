@@ -1,5 +1,7 @@
 # vue_test
 
+DEMO: https://timoszkin.github.io/dc-fe-tymofii-fesenko/
+
 ## Project setup
 ```
 npm install
