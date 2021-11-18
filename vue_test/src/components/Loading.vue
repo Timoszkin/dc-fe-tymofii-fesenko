@@ -1,7 +1,5 @@
 <template>
-  <h1>
-    Loading Characters...
-  </h1>
+  <h1>Loading Characters...</h1>
 </template>
 
 <script>

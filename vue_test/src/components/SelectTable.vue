@@ -1,11 +1,9 @@
-/* eslint-disable */
-
 <template>
   <div class="select__table__wrapper">
     <button
       type="button"
       class="select__table__button"
-      v-bind:class="{'active': !isFavorite}"
+      v-bind:class="{ active: !isFavorite }"
       v-on:click="selectAllCharacters()"
     >
       All Characters
@@ -13,7 +11,7 @@
     <button
       type="button"
       class="select__table__button"
-      v-bind:class="{'active': isFavorite}"
+      v-bind:class="{ active: isFavorite }"
       v-on:click="selectFavorites()"
     >
       Favorites
@@ -24,7 +22,7 @@
 <script>
 export default {
   name: "SelectTable",
-  props: ['isFavorite'],
+  props: ["isFavorite"],
   methods: {
     selectAllCharacters() {
       this.$emit("update:modelValue", false);
@@ -33,20 +31,19 @@ export default {
     selectFavorites() {
       this.$emit("update:modelValue", true);
       this.$emit("reset-page-to-one", 1);
-    }
+    },
   },
 };
 </script>
 
 <style scoped>
-
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&display=swap");
 
 * {
   font-family: Poppins;
   font-size: 16px;
   font-weight: 300;
-  color: #A9B1BD;
+  color: #a9b1bd;
 }
 
 .select__table__wrapper {
@@ -59,7 +56,7 @@ export default {
   align-items: center;
   box-sizing: border-box;
   height: 78px;
-  border-top: #A9B1BD 1px solid
+  border-top: #a9b1bd 1px solid;
 }
 
 .select__table__button {
@@ -68,19 +65,18 @@ export default {
 }
 
 .active {
-  color: #11B0C8;
-  position:relative;
+  color: #11b0c8;
+  position: relative;
   font-weight: 500;
 }
 
-.active::after{
+.active::after {
   position: absolute;
   content: "";
   height: 3px;
-  background-color: #11B0C8;
+  background-color: #11b0c8;
   width: 100%;
   top: 100%;
-  right: 0%
+  right: 0%;
 }
-
 </style>

@@ -1,17 +1,11 @@
-/* eslint-disable *
 <template>
-  <Header 
-    v-model="searchText"
-    :passedSearchProps="searchText"
-  />
+  <Header v-model="searchText" :passedSearchProps="searchText" />
   <SelectTable
     v-model="this.favorites.displayFavorites"
     @reset-page-to-one="resetPageToOne"
     :isFavorite="this.favorites.displayFavorites"
   />
-  <Loading
-    v-if="tableData.length < 1"
-  />
+  <Loading v-if="tableData.length < 1" />
   <Table
     v-if="computedTableData"
     :passedData="computedTableData"
@@ -21,15 +15,21 @@
     @toggle-favorite="toggleFavorites"
   />
   <Pagination
-    v-if="!this.favorites.displayFavorites && computedTableData || favoriteCharacters.length > 0"
-    :totalRecords="this.searchText.text.length > 0
-      ? computedTableData.lengt
-      : this.favorites.displayFavorites
-      ? favoriteCharacters.length
-      : tableData.length"
+    v-if="
+      (!this.favorites.displayFavorites && computedTableData) ||
+      favoriteCharacters.length > 0
+    "
+    :totalRecords="
+      this.searchText.text.length > 0
+        ? computedTableData.lengt
+        : this.favorites.displayFavorites
+        ? favoriteCharacters.length
+        : tableData.length
+    "
     :perPageOptions="perPageOptions"
-    :passedPage="page"
+    :passedPage="this.pagination.page"
     v-model="pagination"
+    :key="this.pagination.key"
   />
 </template>
 
@@ -50,9 +50,9 @@ export type Character = {
   image: string;
   species: string;
   isFavorite: boolean;
-}
+};
 
-const perPageOptions = [8, 15, 20]
+const perPageOptions = [8, 15, 20];
 const NUM_OF_LOADED_PAGES = 3;
 
 export default defineComponent({
@@ -65,103 +65,120 @@ export default defineComponent({
     Loading,
   },
   data: () => ({
-    failedToLoad: { failed: false, reason: ''} ,
-    searchText: { text: '', sortBy: 'name' },
+    failedToLoad: { failed: false, reason: "" },
+    searchText: { text: "", sortBy: "name" },
     favorites: { displayFavorites: false },
     favoriteCharacters: [] as Character[] | never,
     perPageOptions,
     tableData: [] as Character[] | never,
-    pagination: { page: 1, perPage: perPageOptions[0] },
+    pagination: { page: 1, perPage: perPageOptions[0], key: 1 },
     configTable: [
       {
-        key: 'image',
-        title: 'Photo',
-        type: 'image',
+        key: "image",
+        title: "Photo",
+        type: "image",
       },
       {
-        key: 'id',
-        title: 'CharacterID',
-        type: 'text',
+        key: "id",
+        title: "CharacterID",
+        type: "text",
       },
       {
-        key: 'name',
-        title: 'Name',
-        type: 'text',
+        key: "name",
+        title: "Name",
+        type: "text",
       },
       {
-        key: 'gender',
-        title: 'Gender',
-        type: 'text',
+        key: "gender",
+        title: "Gender",
+        type: "text",
       },
       {
-        key: 'species',
-        title: 'Species',
-        type: 'text',
+        key: "species",
+        title: "Species",
+        type: "text",
       },
       {
-        key: 'episode',
-        title: 'Last Episode',
-        type: 'episode-link',
+        key: "episode",
+        title: "Last Episode",
+        type: "episode-link",
       },
       {
-        key: 'isFavorite',
-        title: 'Add To Favorites',
-        type: 'favorite-type',
+        key: "isFavorite",
+        title: "Add To Favorites",
+        type: "favorite-type",
       },
     ],
   }),
-  mounted (): Promise<Character[]> {
+  mounted(): Promise<Character[]> {
     const setFailedtoLoad = (res: any) => {
       this.failedToLoad.failed = true;
-      this.failedToLoad.reason = res.json()
-    }
+      this.failedToLoad.reason = res.json();
+    };
 
     async function fetchMetaData() {
       let allData: Character[] = [];
       let morePagesAvailable = true;
       let currentPage = 0;
 
-      while(morePagesAvailable) {
+      while (morePagesAvailable) {
         currentPage++;
-        const response = await fetch(`https://rickandmortyapi.com/api/character/?page=${currentPage}`)
-        let { results, info }: { results: Character[], info: { pages: number} } = await response.json();
-        results.forEach(el => fetch(el.episode[el.episode.length - 1])
-        .then(res => res.json())
-        .then(res => el.episode = res.episode)
-        .catch(res => setFailedtoLoad(res)),
-  
-        results.forEach(e => allData.push(e)));
+        const response = await fetch(
+          `https://rickandmortyapi.com/api/character/?page=${currentPage}`
+        );
+        let {
+          results,
+          info,
+        }: { results: Character[]; info: { pages: number } } =
+          await response.json();
+        results.forEach(
+          (el) =>
+            fetch(el.episode[el.episode.length - 1])
+              .then((res) => res.json())
+              .then((res) => (el.episode = res.episode))
+              .catch((res) => setFailedtoLoad(res)),
+
+          results.forEach((e) => allData.push(e))
+        );
         morePagesAvailable = currentPage < (NUM_OF_LOADED_PAGES || info.pages);
       }
 
-      allData.forEach(el => el.isFavorite = false)
+      allData.forEach((el) => (el.isFavorite = false));
       return allData;
     }
-    fetchMetaData().then(res => {
+    fetchMetaData().then((res) => {
       this.tableData = res;
-    })
-    return fetchMetaData().then(res => res)
+    });
+    return fetchMetaData().then((res) => res);
   },
   computed: {
-    computedTableData () {
+    computedTableData() {
       if (this.tableData.length < 1) {
-        return []
+        return [];
       }
       let ArrayToCompute = this.favorites.displayFavorites
         ? this.favoriteCharacters
         : this.tableData;
-  
+
       if (this.searchText.text.trim().length > 0) {
-        ArrayToCompute = this.filtered(this.searchText.sortBy, this.searchText.text)
+        ArrayToCompute = this.filtered(
+          this.searchText.sortBy,
+          this.searchText.text
+        );
       }
 
-      const firstIndex = (this.pagination.page - 1) * this.pagination.perPage
-      const lastIndex = this.pagination.page * this.pagination.perPage
+      const firstIndex = (this.pagination.page - 1) * this.pagination.perPage;
+      const lastIndex = this.pagination.page * this.pagination.perPage;
 
-      return ArrayToCompute.slice(firstIndex, lastIndex)
+      return ArrayToCompute.slice(firstIndex, lastIndex);
     },
   },
   methods: {
+    resetPageToOne() {
+      this.pagination.page = 1;
+      console.log(this.pagination.page);
+      this.pagination.key = Math.random();
+    },
     filtered(sorter: string, searchString: string): Character[] {
       const ArrayToFilter = this.favorites.displayFavorites
         ? this.favoriteCharacters
@@ -173,34 +190,37 @@ export default defineComponent({
 
       let sortCriterium: keyof Character;
       switch (sorter) {
-        case 'Episode':
-          sortCriterium = 'episode'
+        case "Episode":
+          sortCriterium = "episode";
           break;
-        case 'Identifier':
-          sortCriterium = 'id'
+        case "Identifier":
+          sortCriterium = "id";
           break;
         default:
-          sortCriterium = 'name'
+          sortCriterium = "name";
           break;
       }
 
-      return ArrayToFilter.filter(el => el[sortCriterium]
-        .toString().toLowerCase().includes(searchString.trim().toLowerCase()))
+      return ArrayToFilter.filter((el) =>
+        el[sortCriterium]
+          .toString()
+          .toLowerCase()
+          .includes(searchString.trim().toLowerCase())
+      );
     },
     toggleFavorites(id: number) {
-      this.tableData.forEach(el => {
+      this.tableData.forEach((el) => {
         if (el.id === id) {
-          el.isFavorite = !el.isFavorite
+          el.isFavorite = !el.isFavorite;
         }
 
-      this.favoriteCharacters = this.tableData.filter(el => el.isFavorite === true)
-      console.log(id, 'toggleFavs');
-      })
+        this.favoriteCharacters = this.tableData.filter(
+          (el) => el.isFavorite === true
+        );
+        console.log(id, "toggleFavs");
+      });
     },
-    resetPageToOne() {
-      this.pagination.page = 1;
-    },
-  }
+  },
 });
 </script>
 
@@ -216,6 +236,6 @@ body {
   text-align: center;
   color: #2c3e50;
   padding: 0px;
-  margin:0px;
+  margin: 0px;
 }
 </style>
