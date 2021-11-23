@@ -113,6 +113,58 @@ export default {
 };
 </script>
 <style scoped>
+
+
+section {
+  display: flex;
+  justify-content: space-between;
+  max-width: 100%;
+  padding-bottom: 100px;
+}
+
+.fal {
+  width: 40px;
+  height: 40px;
+  filter: invert(77%) sepia(52%) saturate(7286%) hue-rotate(150deg)
+    brightness(97%) contrast(87%);
+  display: flex;
+  margin: 8px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-sizing: border-box;
+  border: solid black 3px;
+  background-position: center;
+  border-radius: 5px;
+}
+
+.fal.active {
+  filter: none;
+  color: white;
+  background-color: #11b0c8;
+  border-color: #11b0c8;
+}
+
+.fal.stop {
+  filter: none;
+  filter: invert();
+  background-color: #ee4f37;
+  border-color: #ee4f37;
+}
+
+.fa-chevron-right {
+  background-image: url("../assets/arrow_right.svg");
+}
+.fa-chevron-left {
+  background-image: url("../assets/arrow_left.svg");
+}
+
+.showing {
+  padding: 10px;
+  border-radius: 5px;
+  margin: 5px;
+}
+
 @media only screen and (max-width: 960px) {
   section {
     display: flex;
@@ -147,51 +199,13 @@ export default {
   }
 }
 
-section {
-  display: flex;
-  justify-content: space-between;
+
+@media only screen and (min-width: 2000px) {
+  section {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+  }
 }
 
-.fal {
-  width: 40px;
-  height: 40px;
-  filter: invert(77%) sepia(52%) saturate(7286%) hue-rotate(150deg)
-    brightness(97%) contrast(87%);
-  display: flex;
-  margin: 8px;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-sizing: border-box;
-  border: solid black 3px;
-  background-position: center;
-  border-radius: 5px;
-}
-
-.fal.active {
-  filter: none;
-  color: white;
-  background-color: #11b0c8;
-  border-color: #11b0c8;
-}
-
-.fal.stop {
-  filter: none;
-  filter: invert();
-  background-color: #ee4f37;
-  border-color: #ee4f37;
-}
-
-.fa-chevron-right {
-  background-image: url("../images/arrow_right.svg");
-}
-.fa-chevron-left {
-  background-image: url("../images/arrow_left.svg");
-}
-
-.showing {
-  padding: 10px;
-  border-radius: 5px;
-  margin: 5px;
-}
 </style>

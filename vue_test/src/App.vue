@@ -11,6 +11,7 @@
     :passedData="computedTableData"
     :config="configTable"
     :favoritesOn="this.favorites.displayFavorites"
+    :searchText="this.searchText.text"
     :toggleFavorites="toggleFavorites"
     @toggle-favorite="toggleFavorites"
   />
@@ -176,7 +177,6 @@ export default defineComponent({
   methods: {
     resetPageToOne() {
       this.pagination.page = 1;
-      console.log(this.pagination.page);
       this.pagination.key = Math.random();
     },
     filtered(sorter: string, searchString: string): Character[] {
@@ -217,7 +217,6 @@ export default defineComponent({
         this.favoriteCharacters = this.tableData.filter(
           (el) => el.isFavorite === true
         );
-        console.log(id, "toggleFavs");
       });
     },
   },
@@ -227,6 +226,8 @@ export default defineComponent({
 <style>
 body {
   margin: 0px;
+  max-width: 100%;
+  overflow-x: hidden;
 }
 
 #app {

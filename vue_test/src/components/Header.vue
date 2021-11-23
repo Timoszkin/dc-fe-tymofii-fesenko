@@ -1,7 +1,7 @@
 <template>
   <header class="header">
     <img
-      src="../images/logo.png"
+      src="../assets/logo.png"
       alt="rick and morty logo"
       width="240"
       height="70"
@@ -24,7 +24,7 @@
       <input
         type="text"
         class="select__box searchbox__element searchbox__input"
-        v-on:keyup="(event) => addSearchText(event)"
+        v-on:keyup="debounceSearch"
       />
       <span class="icon"></span>
     </div>
@@ -39,6 +39,18 @@ export default {
     return { text: "", sortBy: "Name" };
   },
   methods: {
+    debounceSearch(e) {
+      const addSearchText = this.addSearchText;
+      let timeout = 0;
+      function debounced() {
+        clearTimeout(timeout)
+        setTimeout(() => {
+          addSearchText(e)
+        }, 400)
+      }
+
+      debounced()
+    },
     addSearchText(event) {
       this.text = event.target.value;
       this.$emit("update:modelValue", { text: this.text, sortBy: this.sortBy });
@@ -62,20 +74,9 @@ export default {
   font-size: 16px;
 }
 
-@media only screen and (max-width: 960px) {
-  .header {
-    display: flex;
-    height: fit-content;
-    flex-direction: column;
-    padding: 40px 0;
-  }
-
-  .searchbox {
-    margin-top: 20px;
-  }
-}
-
 header {
+  box-sizing: border-box;
+  max-width: 100%;
   margin: 0px;
   padding-left: 140px;
   padding-top: 32px;
@@ -89,7 +90,6 @@ header {
 .searchbox {
   height: 56px;
   width: 505px;
-  margin-left: 80px;
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -104,7 +104,7 @@ header {
     brightness(97%) contrast(87%);
   width: 24px;
   height: 24px;
-  background-image: url("../images/search.svg");
+  background-image: url("../assets/search.svg");
   background-size: contain;
   background-repeat: no-repeat;
   margin: auto;
@@ -141,6 +141,42 @@ header {
   border-right: none;
   border-left: 1px solid #a9b1bd;
 }
+
+.searchbox__input:focus {
+  outline: none;
+}
+
+@media only screen and (max-width: 960px) {
+  .header {
+    display: flex;
+    height: fit-content;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 40px 0;
+  }
+
+  img {
+    padding-left: 20px;
+  }
+
+  .searchbox {
+    margin-top: 20px;
+    margin-left: 20px;
+  }
+}
+@media only screen and (min-width: 960px) {
+  .searchbox {
+    margin-left: 80px;
+  }
+}
+
+@media only screen and (min-width: 2000px) {
+  .header {
+    display: flex;
+    justify-content: center;
+  }
+}
+
 </style>
 
 <style scoped>

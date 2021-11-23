@@ -79,4 +79,19 @@ export default {
   top: 100%;
   right: 0%;
 }
+
+@media only screen and (max-width: 960px) {
+  .select__table__wrapper {
+      padding-left: 20px;
+  }
+}
+
+@media only screen and (min-width: 2000px) {
+  .select__table__wrapper {
+    max-width: 1400px;
+    margin: auto;
+  }
+}
+
+
 </style>
